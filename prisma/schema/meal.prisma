@@ -1,0 +1,28 @@
+model Meal {
+    id          String          @id @default(uuid())
+    name        String
+    description String?
+    price       Float
+    imageUrl    String?
+    status      MealStatus      @default(AVAILABLE)
+    isFeatured  Boolean         @default(false)
+    providerId  String
+    categoryId  String
+    provider    ProviderProfile @relation(fields: [providerId], references: [id])
+    category    Category        @relation(fields: [categoryId], references: [id])
+
+    reviews Review[]
+    orders OrderItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([providerId])
+    @@index([categoryId])
+    @@map("menu")
+}
+
+enum MealStatus {
+    AVAILABLE
+    UNAVAILABLE
+}
