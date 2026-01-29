@@ -1,12 +1,16 @@
 model ProviderProfile {
-    id             String  @id @default(uuid())
-    userId         String  @unique
-    restaurantName String
-    address        String
-    phone          String
-    isOpen         Boolean @default(true)
-    meals          Meal[]
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  restaurantName String
+  address        String
+  phone          String
+  logo           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  meals  Meal[]
+  orders Order[] @relation("ProviderOrders")
+
+  @@index([userId])
+  @@map("providers")
 }

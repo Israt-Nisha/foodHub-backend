@@ -9,15 +9,25 @@
 * 🟢 You can import this file directly.
 */
 
-export const MealStatus = {
-  AVAILABLE: 'AVAILABLE',
-  UNAVAILABLE: 'UNAVAILABLE'
+export const Role = {
+  CUSTOMER: 'CUSTOMER',
+  PROVIDER: 'PROVIDER',
+  ADMIN: 'ADMIN'
 } as const
 
-export type MealStatus = (typeof MealStatus)[keyof typeof MealStatus]
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
 export const OrderStatus = {
+  PLACED: 'PLACED',
   PREPARING: 'PREPARING',
   READY: 'READY',
   DELIVERED: 'DELIVERED',

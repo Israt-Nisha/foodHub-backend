@@ -51,6 +51,10 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  User: 'User',
+  Session: 'Session',
+  Account: 'Account',
+  Verification: 'Verification',
   Category: 'Category',
   Meal: 'Meal',
   Order: 'Order',
@@ -75,10 +79,70 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  role: 'role',
+  status: 'status'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  expiresAt: 'expiresAt',
+  token: 'token',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  userId: 'userId'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  userId: 'userId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  idToken: 'idToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
+  scope: 'scope',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const VerificationScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  value: 'value',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
 export const CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  imageUrl: 'imageUrl'
+  slug: 'slug'
 } as const
 
 export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
@@ -90,12 +154,12 @@ export const MealScalarFieldEnum = {
   description: 'description',
   price: 'price',
   imageUrl: 'imageUrl',
-  status: 'status',
-  isFeatured: 'isFeatured',
-  providerId: 'providerId',
-  categoryId: 'categoryId',
+  isAvailable: 'isAvailable',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  providerId: 'providerId',
+  categoryId: 'categoryId'
 } as const
 
 export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof MealScalarFieldEnum]
@@ -103,10 +167,11 @@ export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof Meal
 
 export const OrderScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  addressId: 'addressId',
+  customerId: 'customerId',
+  providerId: 'providerId',
+  address: 'address',
+  totalAmount: 'totalAmount',
   status: 'status',
-  total: 'total',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -119,7 +184,9 @@ export const OrderItemScalarFieldEnum = {
   orderId: 'orderId',
   mealId: 'mealId',
   quantity: 'quantity',
-  price: 'price'
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
@@ -131,7 +198,7 @@ export const ProviderProfileScalarFieldEnum = {
   restaurantName: 'restaurantName',
   address: 'address',
   phone: 'phone',
-  isOpen: 'isOpen',
+  logo: 'logo',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -143,9 +210,10 @@ export const ReviewScalarFieldEnum = {
   id: 'id',
   rating: 'rating',
   comment: 'comment',
-  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   mealId: 'mealId',
-  createdAt: 'createdAt'
+  userId: 'userId'
 } as const
 
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]

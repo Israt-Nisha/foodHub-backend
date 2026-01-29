@@ -1,11 +1,12 @@
 model OrderItem {
-  id       String @id @default(uuid())
-  orderId String
-  mealId  String
+  id        String   @id @default(uuid())
+  orderId   String
+  mealId    String
+  quantity  Int
+  price    Float 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  quantity Int
-  price    Float   // price at order time
-
-  order Order @relation(fields: [orderId], references: [id])
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   meal  Meal  @relation(fields: [mealId], references: [id])
 }

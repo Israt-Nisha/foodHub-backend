@@ -1,6 +1,8 @@
 model Category {
-    id       String  @id @default(uuid())
-    name     String  @unique
-    imageUrl String?
-    meals    Meal[]
+  id    String @id @default(uuid())
+  name  String @unique
+  slug  String @unique
+  meals Meal[]
+
+  @@map("categories")
 }
