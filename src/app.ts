@@ -1,8 +1,10 @@
 import express, {Application} from "express"
-import { mealRouter } from "./modules/menu/meal.router";
+import { mealRouter } from "./modules/meal/meal.router";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import cors from "cors"
+import { providerRouter } from "./modules/provider/provider.router";
+import { categoryRouter } from "./modules/category/category.router";
 
 const app: Application = express();
 
@@ -17,9 +19,11 @@ app.use(
 
 app.all('/api/auth/{*splat}', toNodeHandler(auth));
 
+app.use("/api/providers", providerRouter);
 
+app.use("/api/categories", categoryRouter);
 
-app.use("/meals", mealRouter);
+app.use("/api/meals", mealRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello world")
