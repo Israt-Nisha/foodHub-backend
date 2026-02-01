@@ -34,6 +34,33 @@ const createMeal = async (req: Request, res: Response) => {
       });
   }
 };
-export const MealController = {
-    createMeal
+
+
+const getAllMeals = async (req: Request, res: Response) => {
+  try {
+    const meals = await mealService.getAllMeals(req.user?.id);
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Meals fetched successfully",
+        data: meals,
+        error: null,
+      });
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: err.message || "Failed to fetch meals",
+        data: null,
+        error: err.message || "Unknown error",
+      });
+  }
+};
+
+
+export const mealController = {
+    createMeal,
+    getAllMeals
 }

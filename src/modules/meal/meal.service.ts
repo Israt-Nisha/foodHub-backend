@@ -16,6 +16,21 @@ const createMeal = async (payload: any, userId: string) => {
 };
 
 
+const getAllMeals = async (userId?: string) => {
+  const whereClause = userId ? { userId } : {};
+
+  return prisma.meal.findMany({
+    where: whereClause,
+    include: {
+      provider: true,
+      category: true,
+      reviews: true,
+    },
+  });
+};
+
+
 export const mealService = {
-    createMeal
+    createMeal,
+    getAllMeals,
 }
