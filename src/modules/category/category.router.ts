@@ -10,7 +10,7 @@ router.get("/:id", categoryController.getCategoryById);
 
 router.post(
   "/",
-  auth(UserRole.ADMIN, UserRole.PROVIDER),
+  auth(UserRole.ADMIN),
   categoryController.createCategory,
 );
 
