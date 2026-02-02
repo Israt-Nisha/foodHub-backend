@@ -62,3 +62,15 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+
+enum Role {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
