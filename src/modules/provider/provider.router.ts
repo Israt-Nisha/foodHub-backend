@@ -22,7 +22,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  auth(UserRole.ADMIN),
+  auth(UserRole.ADMIN, UserRole.PROVIDER),
   providerController.deleteProviderProfile,
 );
 

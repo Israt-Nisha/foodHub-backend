@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { providerService } from "./provider.service";
+import { UserRole } from "../../types/user.role";
 
 const getAllProviders = async (_req: Request, res: Response) => {
   try {
@@ -94,11 +95,15 @@ const updateProviderProfile = async (req: Request, res: Response) => {
 
 const deleteProviderProfile = async (req: Request, res: Response) => {
   try {
+
     const { id } = req.params;
+
+    const isAdmin = req.user!.role === UserRole.ADMIN
 
     await providerService.deleteProviderProfile(
       id as string,
       req.user!.id as string,
+      isAdmin
     );
 
     res.status(200).json({

@@ -82,7 +82,7 @@ const updateProviderProfile = async (
   });
 };
 
-const deleteProviderProfile = async (providerId: string, userId: string) => {
+const deleteProviderProfile = async (providerId: string, userId: string, isAdmin: boolean) => {
   const provider = await prisma.providerProfile.findUnique({
     where: { id: providerId },
   });
@@ -93,11 +93,15 @@ const deleteProviderProfile = async (providerId: string, userId: string) => {
     throw error;
   }
 
-  if (provider.userId !== userId) {
+  if (!isAdmin && (provider.userId !== userId)) {
     const error = new Error("You are not allowed to delete this profile");
     (error as any).statusCode = 403;
     throw error;
   }
+
+   await prisma.meal.deleteMany({
+    where: { providerId },
+  });
 
   await prisma.providerProfile.delete({
     where: { id: providerId },
