@@ -36,6 +36,26 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 
+const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+   
+    const {id} =req.params;
+    
+    const result = await userService.getUserById(id as string);
+
+    res.status(200).json({
+      success: true,
+      message: "User get by Id successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const updateUserStatus = async (
   req: Request,
   res: Response,
@@ -45,8 +65,7 @@ const updateUserStatus = async (
     const { status } = req.body;
 
     const {id} =req.params;
-
-
+    
     const result = await userService.updateUserStatus(id as string, { status });
 
     res.status(200).json({
@@ -58,8 +77,30 @@ const updateUserStatus = async (
     next(error);
   }
 };
+const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+   
+    const {id} =req.params;
+
+    const result = await userService.deleteUser(id as string);
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const userController = {
   getAllUsers,
+  getUserById,
   updateUserStatus,
+  deleteUser,
 };

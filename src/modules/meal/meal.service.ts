@@ -1,6 +1,5 @@
 import { Meal } from "../../../prisma/generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-import { UserRole } from "../../middlewares/auth";
 
 const createMeal = async (payload: any, userId: string) => {
   const provider = await prisma.providerProfile.findUnique({

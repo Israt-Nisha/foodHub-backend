@@ -6,6 +6,8 @@ import cors from "cors"
 import { providerRouter } from "./modules/provider/provider.router";
 import { categoryRouter } from "./modules/category/category.router";
 import { userRouter } from "./modules/user/user.router";
+import { notFound } from "./middlewares/notFound";
+import errorHandler from "./middlewares/globalErrorHandler";
 
 const app: Application = express();
 
@@ -32,5 +34,9 @@ app.get("/", (req, res) => {
     res.send("Hello world")
 })
 
+
+
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;

@@ -1,3 +1,4 @@
+import { date } from "better-auth";
 import { UserStatus } from "../../../prisma/generated/prisma/enums";
 import { UserWhereInput } from "../../../prisma/generated/prisma/models";
 import { prisma } from "../../lib/prisma";
@@ -74,7 +75,19 @@ const getAllUsers = async ({
 };
 
 
+const getUserById = async (id: string) => {
+
+  await prisma.user.findUniqueOrThrow({ where: { id } });
+
+  return prisma.user.findUnique({
+    where: { id },
+  });
+};
+
 const updateUserStatus = async (id: string, data: { status: UserStatus }) => {
+
+  await prisma.user.findUniqueOrThrow({ where: { id } });
+
   return prisma.user.update({
     where: { id },
     data: {
@@ -83,8 +96,20 @@ const updateUserStatus = async (id: string, data: { status: UserStatus }) => {
   });
 };
 
+
+const deleteUser = async (id: string) => {
+
+   await prisma.user.findUniqueOrThrow({ where: { id } });
+   
+   return prisma.user.delete({
+    where: { id }
+  });
+};
+
 export const userService = {
   getAllUsers,
+  getUserById,
   updateUserStatus,
+  deleteUser,
 
 }
