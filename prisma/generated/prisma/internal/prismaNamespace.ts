@@ -1268,6 +1268,8 @@ export const MealScalarFieldEnum = {
   price: 'price',
   imageUrl: 'imageUrl',
   isAvailable: 'isAvailable',
+  cuisine: 'cuisine',
+  dietary: 'dietary',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId',
@@ -1408,6 +1410,34 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CuisineType'
+ */
+export type EnumCuisineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CuisineType'>
+    
+
+
+/**
+ * Reference to a field of type 'CuisineType[]'
+ */
+export type ListEnumCuisineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CuisineType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DietaryType'
+ */
+export type EnumDietaryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DietaryType'>
+    
+
+
+/**
+ * Reference to a field of type 'DietaryType[]'
+ */
+export type ListEnumDietaryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DietaryType[]'>
     
 
 

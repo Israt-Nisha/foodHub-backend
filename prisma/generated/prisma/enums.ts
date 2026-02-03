@@ -26,6 +26,27 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
+export const CuisineType = {
+  BENGALI: 'BENGALI',
+  INDIAN: 'INDIAN',
+  CHINESE: 'CHINESE',
+  ITALIAN: 'ITALIAN',
+  THAI: 'THAI'
+} as const
+
+export type CuisineType = (typeof CuisineType)[keyof typeof CuisineType]
+
+
+export const DietaryType = {
+  VEG: 'VEG',
+  NON_VEG: 'NON_VEG',
+  VEGAN: 'VEGAN',
+  HALAL: 'HALAL'
+} as const
+
+export type DietaryType = (typeof DietaryType)[keyof typeof DietaryType]
+
+
 export const OrderStatus = {
   PLACED: 'PLACED',
   PREPARING: 'PREPARING',

@@ -1,12 +1,16 @@
 model Meal {
-    id          String   @id @default(uuid())
+    id          String  @id @default(uuid())
     name        String
     description String
     price       Float
     imageUrl    String?
-    isAvailable Boolean  @default(true)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    isAvailable Boolean @default(true)
+
+    cuisine CuisineType
+    dietary DietaryType
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     userId     String
     providerId String
@@ -20,4 +24,19 @@ model Meal {
 
     @@index([providerId])
     @@map("meals")
+}
+
+enum CuisineType {
+    BENGALI
+    INDIAN
+    CHINESE
+    ITALIAN
+    THAI
+}
+
+enum DietaryType {
+    VEG
+    NON_VEG
+    VEGAN
+    HALAL
 }

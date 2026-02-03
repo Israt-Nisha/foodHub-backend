@@ -41,6 +41,8 @@ export type MealMinAggregateOutputType = {
   price: number | null
   imageUrl: string | null
   isAvailable: boolean | null
+  cuisine: $Enums.CuisineType | null
+  dietary: $Enums.DietaryType | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -55,6 +57,8 @@ export type MealMaxAggregateOutputType = {
   price: number | null
   imageUrl: string | null
   isAvailable: boolean | null
+  cuisine: $Enums.CuisineType | null
+  dietary: $Enums.DietaryType | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -69,6 +73,8 @@ export type MealCountAggregateOutputType = {
   price: number
   imageUrl: number
   isAvailable: number
+  cuisine: number
+  dietary: number
   createdAt: number
   updatedAt: number
   userId: number
@@ -93,6 +99,8 @@ export type MealMinAggregateInputType = {
   price?: true
   imageUrl?: true
   isAvailable?: true
+  cuisine?: true
+  dietary?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -107,6 +115,8 @@ export type MealMaxAggregateInputType = {
   price?: true
   imageUrl?: true
   isAvailable?: true
+  cuisine?: true
+  dietary?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -121,6 +131,8 @@ export type MealCountAggregateInputType = {
   price?: true
   imageUrl?: true
   isAvailable?: true
+  cuisine?: true
+  dietary?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -222,6 +234,8 @@ export type MealGroupByOutputType = {
   price: number
   imageUrl: string | null
   isAvailable: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt: Date
   updatedAt: Date
   userId: string
@@ -259,6 +273,8 @@ export type MealWhereInput = {
   price?: Prisma.FloatFilter<"Meal"> | number
   imageUrl?: Prisma.StringNullableFilter<"Meal"> | string | null
   isAvailable?: Prisma.BoolFilter<"Meal"> | boolean
+  cuisine?: Prisma.EnumCuisineTypeFilter<"Meal"> | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFilter<"Meal"> | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFilter<"Meal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meal"> | Date | string
   userId?: Prisma.StringFilter<"Meal"> | string
@@ -277,6 +293,8 @@ export type MealOrderByWithRelationInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  cuisine?: Prisma.SortOrder
+  dietary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -298,6 +316,8 @@ export type MealWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.FloatFilter<"Meal"> | number
   imageUrl?: Prisma.StringNullableFilter<"Meal"> | string | null
   isAvailable?: Prisma.BoolFilter<"Meal"> | boolean
+  cuisine?: Prisma.EnumCuisineTypeFilter<"Meal"> | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFilter<"Meal"> | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFilter<"Meal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meal"> | Date | string
   userId?: Prisma.StringFilter<"Meal"> | string
@@ -316,6 +336,8 @@ export type MealOrderByWithAggregationInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  cuisine?: Prisma.SortOrder
+  dietary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -338,6 +360,8 @@ export type MealScalarWhereWithAggregatesInput = {
   price?: Prisma.FloatWithAggregatesFilter<"Meal"> | number
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Meal"> | string | null
   isAvailable?: Prisma.BoolWithAggregatesFilter<"Meal"> | boolean
+  cuisine?: Prisma.EnumCuisineTypeWithAggregatesFilter<"Meal"> | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeWithAggregatesFilter<"Meal"> | $Enums.DietaryType
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Meal"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Meal"> | Date | string
   userId?: Prisma.StringWithAggregatesFilter<"Meal"> | string
@@ -352,6 +376,8 @@ export type MealCreateInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -368,6 +394,8 @@ export type MealUncheckedCreateInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -384,6 +412,8 @@ export type MealUpdateInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -400,6 +430,8 @@ export type MealUncheckedUpdateInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -416,6 +448,8 @@ export type MealCreateManyInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -430,6 +464,8 @@ export type MealUpdateManyMutationInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -442,6 +478,8 @@ export type MealUncheckedUpdateManyInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -466,6 +504,8 @@ export type MealCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  cuisine?: Prisma.SortOrder
+  dietary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -484,6 +524,8 @@ export type MealMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  cuisine?: Prisma.SortOrder
+  dietary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -498,6 +540,8 @@ export type MealMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
+  cuisine?: Prisma.SortOrder
+  dietary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -562,6 +606,14 @@ export type FloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type EnumCuisineTypeFieldUpdateOperationsInput = {
+  set?: $Enums.CuisineType
+}
+
+export type EnumDietaryTypeFieldUpdateOperationsInput = {
+  set?: $Enums.DietaryType
 }
 
 export type MealCreateNestedOneWithoutOrderItemsInput = {
@@ -641,6 +693,8 @@ export type MealCreateWithoutCategoryInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -656,6 +710,8 @@ export type MealUncheckedCreateWithoutCategoryInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -700,6 +756,8 @@ export type MealScalarWhereInput = {
   price?: Prisma.FloatFilter<"Meal"> | number
   imageUrl?: Prisma.StringNullableFilter<"Meal"> | string | null
   isAvailable?: Prisma.BoolFilter<"Meal"> | boolean
+  cuisine?: Prisma.EnumCuisineTypeFilter<"Meal"> | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFilter<"Meal"> | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFilter<"Meal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meal"> | Date | string
   userId?: Prisma.StringFilter<"Meal"> | string
@@ -714,6 +772,8 @@ export type MealCreateWithoutOrderItemsInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -729,6 +789,8 @@ export type MealUncheckedCreateWithoutOrderItemsInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -760,6 +822,8 @@ export type MealUpdateWithoutOrderItemsInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -775,6 +839,8 @@ export type MealUncheckedUpdateWithoutOrderItemsInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -790,6 +856,8 @@ export type MealCreateWithoutProviderInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -805,6 +873,8 @@ export type MealUncheckedCreateWithoutProviderInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -846,6 +916,8 @@ export type MealCreateWithoutReviewsInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -861,6 +933,8 @@ export type MealUncheckedCreateWithoutReviewsInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -892,6 +966,8 @@ export type MealUpdateWithoutReviewsInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -907,6 +983,8 @@ export type MealUncheckedUpdateWithoutReviewsInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -922,6 +1000,8 @@ export type MealCreateManyCategoryInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -935,6 +1015,8 @@ export type MealUpdateWithoutCategoryInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -950,6 +1032,8 @@ export type MealUncheckedUpdateWithoutCategoryInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -965,6 +1049,8 @@ export type MealUncheckedUpdateManyWithoutCategoryInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -978,6 +1064,8 @@ export type MealCreateManyProviderInput = {
   price: number
   imageUrl?: string | null
   isAvailable?: boolean
+  cuisine: $Enums.CuisineType
+  dietary: $Enums.DietaryType
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -991,6 +1079,8 @@ export type MealUpdateWithoutProviderInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1006,6 +1096,8 @@ export type MealUncheckedUpdateWithoutProviderInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1021,6 +1113,8 @@ export type MealUncheckedUpdateManyWithoutProviderInput = {
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cuisine?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  dietary?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1074,6 +1168,8 @@ export type MealSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   price?: boolean
   imageUrl?: boolean
   isAvailable?: boolean
+  cuisine?: boolean
+  dietary?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1093,6 +1189,8 @@ export type MealSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   price?: boolean
   imageUrl?: boolean
   isAvailable?: boolean
+  cuisine?: boolean
+  dietary?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1109,6 +1207,8 @@ export type MealSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   price?: boolean
   imageUrl?: boolean
   isAvailable?: boolean
+  cuisine?: boolean
+  dietary?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1125,6 +1225,8 @@ export type MealSelectScalar = {
   price?: boolean
   imageUrl?: boolean
   isAvailable?: boolean
+  cuisine?: boolean
+  dietary?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1132,7 +1234,7 @@ export type MealSelectScalar = {
   categoryId?: boolean
 }
 
-export type MealOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "imageUrl" | "isAvailable" | "createdAt" | "updatedAt" | "userId" | "providerId" | "categoryId", ExtArgs["result"]["meal"]>
+export type MealOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "imageUrl" | "isAvailable" | "cuisine" | "dietary" | "createdAt" | "updatedAt" | "userId" | "providerId" | "categoryId", ExtArgs["result"]["meal"]>
 export type MealInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   provider?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
@@ -1164,6 +1266,8 @@ export type $MealPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     price: number
     imageUrl: string | null
     isAvailable: boolean
+    cuisine: $Enums.CuisineType
+    dietary: $Enums.DietaryType
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -1602,6 +1706,8 @@ export interface MealFieldRefs {
   readonly price: Prisma.FieldRef<"Meal", 'Float'>
   readonly imageUrl: Prisma.FieldRef<"Meal", 'String'>
   readonly isAvailable: Prisma.FieldRef<"Meal", 'Boolean'>
+  readonly cuisine: Prisma.FieldRef<"Meal", 'CuisineType'>
+  readonly dietary: Prisma.FieldRef<"Meal", 'DietaryType'>
   readonly createdAt: Prisma.FieldRef<"Meal", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Meal", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Meal", 'String'>
