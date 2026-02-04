@@ -1,4 +1,16 @@
 -- CreateEnum
+CREATE TYPE "Role" AS ENUM ('CUSTOMER', 'PROVIDER', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'SUSPENDED');
+
+-- CreateEnum
+CREATE TYPE "CuisineType" AS ENUM ('BENGALI', 'INDIAN', 'CHINESE', 'ITALIAN', 'THAI');
+
+-- CreateEnum
+CREATE TYPE "DietaryType" AS ENUM ('VEG', 'NON_VEG', 'VEGAN', 'HALAL');
+
+-- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PLACED', 'PREPARING', 'READY', 'DELIVERED', 'CANCELLED');
 
 -- CreateTable
@@ -10,6 +22,8 @@ CREATE TABLE "user" (
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "role" TEXT DEFAULT 'CUSTOMER',
+    "status" TEXT DEFAULT 'ACTIVE',
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -76,6 +90,8 @@ CREATE TABLE "meals" (
     "price" DOUBLE PRECISION NOT NULL,
     "imageUrl" TEXT,
     "isAvailable" BOOLEAN NOT NULL DEFAULT true,
+    "cuisine" "CuisineType" NOT NULL,
+    "dietary" "DietaryType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,
