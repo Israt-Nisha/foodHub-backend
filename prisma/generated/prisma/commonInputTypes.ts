@@ -148,6 +148,17 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type IntFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntFilter<$PrismaModel> | number
+}
+
 export type FloatFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
@@ -159,18 +170,20 @@ export type FloatFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
-export type EnumCuisineTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.CuisineType | Prisma.EnumCuisineTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCuisineTypeFilter<$PrismaModel> | $Enums.CuisineType
-}
-
-export type EnumDietaryTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.DietaryType | Prisma.EnumDietaryTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumDietaryTypeFilter<$PrismaModel> | $Enums.DietaryType
+export type IntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedIntFilter<$PrismaModel>
+  _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
 export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -187,6 +200,20 @@ export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumCuisineTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CuisineType | Prisma.EnumCuisineTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCuisineTypeFilter<$PrismaModel> | $Enums.CuisineType
+}
+
+export type EnumDietaryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DietaryType | Prisma.EnumDietaryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDietaryTypeFilter<$PrismaModel> | $Enums.DietaryType
 }
 
 export type EnumCuisineTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -224,33 +251,6 @@ export type EnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOrderStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOrderStatusFilter<$PrismaModel>
-}
-
-export type IntFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntFilter<$PrismaModel> | number
-}
-
-export type IntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedIntFilter<$PrismaModel>
-  _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -411,18 +411,20 @@ export type NestedFloatFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
-export type NestedEnumCuisineTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.CuisineType | Prisma.EnumCuisineTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCuisineTypeFilter<$PrismaModel> | $Enums.CuisineType
-}
-
-export type NestedEnumDietaryTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.DietaryType | Prisma.EnumDietaryTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumDietaryTypeFilter<$PrismaModel> | $Enums.DietaryType
+export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedIntFilter<$PrismaModel>
+  _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -439,6 +441,20 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumCuisineTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CuisineType | Prisma.EnumCuisineTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CuisineType[] | Prisma.ListEnumCuisineTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCuisineTypeFilter<$PrismaModel> | $Enums.CuisineType
+}
+
+export type NestedEnumDietaryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DietaryType | Prisma.EnumDietaryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DietaryType[] | Prisma.ListEnumDietaryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDietaryTypeFilter<$PrismaModel> | $Enums.DietaryType
 }
 
 export type NestedEnumCuisineTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -476,22 +492,6 @@ export type NestedEnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOrderStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOrderStatusFilter<$PrismaModel>
-}
-
-export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedIntFilter<$PrismaModel>
-  _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
 

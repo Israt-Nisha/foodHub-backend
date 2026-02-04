@@ -600,14 +600,6 @@ export type MealUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumCuisineTypeFieldUpdateOperationsInput = {
   set?: $Enums.CuisineType
 }
