@@ -4,10 +4,10 @@ import { UserRole } from "../middlewares/auth";
 async function seedAdmin() {
   try {
     const adminData = {
-      name: "Admin User",
+      name: "Admin",
       email: "admin123@gmail.com",
       role: UserRole.ADMIN,
-      password: "123456789",
+      password: "12345678",
     };
 
     const existingUser = await prisma.user.findUnique({
