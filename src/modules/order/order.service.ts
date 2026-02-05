@@ -1,5 +1,6 @@
 import { OrderStatus } from "../../../prisma/generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import { UserRole } from "../../types/user.role";
 
 
 
@@ -73,7 +74,7 @@ const updateOrderStatus = async (
   const order = await prisma.order.findUnique({ where: { id } });
   if (!order) throw new Error("Order not found");
 
-  if (user.role === "PROVIDER") {
+  if (user.role === UserRole.PROVIDER) {
     const providerProfile = await prisma.providerProfile.findUnique({
       where: { userId: user.id },
     });
@@ -97,7 +98,7 @@ const updateOrderStatus = async (
     }
   }
 
-  if (user.role === "CUSTOMER") {
+  if (user.role === UserRole.CUSTOMER) {
     if (order.customerId !== user.id) {
       throw new Error("Not authorized");
     }

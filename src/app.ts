@@ -10,6 +10,7 @@ import { notFound } from "./middlewares/notFound";
 import errorHandler from "./middlewares/globalErrorHandler";
 import { cartRouter } from "./modules/cart/cart.router";
 import { orderRouter } from "./modules/order/order.router";
+import { reviewRouter } from "./modules/review/review.router";
 
 const app: Application = express();
 
@@ -33,6 +34,8 @@ app.use("/api/meals", mealRouter);
 app.use("/api/carts", cartRouter);
 
 app.use("/api/orders", orderRouter);
+
+app.use("/api/reviews", reviewRouter);
 
 app.use("/api/admin", userRouter);
 
