@@ -40,7 +40,7 @@ app.use("/api/reviews", reviewRouter);
 app.use("/api/admin", userRouter);
 
 app.get("/", (req, res) => {
-    res.send("Hello world")
+    res.send("Hello from FoodHub server")
 })
 
 
