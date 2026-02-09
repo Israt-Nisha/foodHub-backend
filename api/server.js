@@ -918,7 +918,13 @@ import express3 from "express";
 // src/modules/category/category.service.ts
 var getAllCategories = async () => {
   const categories = await prisma.category.findMany({
-    include: { meals: true }
+    include: {
+      _count: {
+        select: {
+          meals: true
+        }
+      }
+    }
   });
   if (!categories || categories.length === 0) {
     throw new Error("No categories found");
@@ -987,8 +993,20 @@ var updateCategory = async (id, payload) => {
 };
 var deleteCategory = async (id) => {
   if (!id) throw new Error("Category ID is required!");
-  const category = await prisma.category.findUnique({ where: { id } });
+  const category = await prisma.category.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: { meals: true }
+      }
+    }
+  });
   if (!category) throw new Error("Category not found!");
+  if (category._count.meals > 0) {
+    throw new Error(
+      "Cannot delete category with existing meals"
+    );
+  }
   await prisma.category.delete({ where: { id } });
   return true;
 };

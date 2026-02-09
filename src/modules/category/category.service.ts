@@ -2,7 +2,13 @@ import { prisma } from "../../lib/prisma";
 
 const getAllCategories = async () => {
   const categories = await prisma.category.findMany({
-    include: { meals: true },
+    include: {
+      _count: {
+        select: {
+          meals: true,
+        },
+      },
+    },
   });
 
   if (!categories || categories.length === 0) {
@@ -51,7 +57,7 @@ const createCategory = async (payload: {
   }
 
   return prisma.category.create({
-     data: {
+    data: {
       name,
       slug,
       imageUrl: imageUrl ?? null,
@@ -76,7 +82,7 @@ const updateCategory = async (
   const category = await prisma.category.findUnique({ where: { id } });
   if (!category) throw new Error("Category not found!");
 
-  
+
   if (name && name !== category.name) {
     const existingName = await prisma.category.findFirst({
       where: { name, NOT: { id } },
@@ -109,8 +115,23 @@ const updateCategory = async (
 const deleteCategory = async (id: string) => {
   if (!id) throw new Error("Category ID is required!");
 
-  const category = await prisma.category.findUnique({ where: { id } });
+  const category = await prisma.category.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: { meals: true },
+      },
+    },
+  });
+
   if (!category) throw new Error("Category not found!");
+  
+  if (category._count.meals > 0) {
+    throw new Error(
+      "Cannot delete category with existing meals"
+    );
+  }
+
 
   await prisma.category.delete({ where: { id } });
 
