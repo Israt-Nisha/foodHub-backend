@@ -42,9 +42,9 @@ const getUserById = async (
   next: NextFunction,
 ) => {
   try {
-   
-    const {id} =req.params;
-    
+
+    const { id } = req.params;
+
     const result = await userService.getUserById(id as string);
 
     res.status(200).json({
@@ -64,8 +64,8 @@ const updateUserStatus = async (
   try {
     const { status } = req.body;
 
-    const {id} =req.params;
-    
+    const { id } = req.params;
+
     const result = await userService.updateUserStatus(id as string, { status });
 
     res.status(200).json({
@@ -77,14 +77,48 @@ const updateUserStatus = async (
     next(error);
   }
 };
+
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await userService.updateUser(
+      id as string,
+      req.body,
+    );
+    if (error) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+        data: null,
+        error: error.message,
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "User updated successfully!",
+      data,
+      error: null,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating user!",
+      data: null,
+      error: err?.message || "Internal Server Error!",
+    });
+  }
+};
+
 const deleteUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-   
-    const {id} =req.params;
+
+    const { id } = req.params;
 
     const result = await userService.deleteUser(id as string);
 
@@ -98,9 +132,25 @@ const deleteUser = async (
   }
 };
 
+
+const getStats = async (req: Request, res: Response) => {
+  try {
+    const result = await userService.getStats();
+    res.status(200).json(result)
+  } catch (e) {
+    const errorMessage = (e instanceof Error) ? e.message : "Stats fetched failed!"
+    res.status(400).json({
+      error: errorMessage,
+      details: e
+    })
+  }
+}
+
 export const userController = {
   getAllUsers,
   getUserById,
   updateUserStatus,
+  updateUser,
   deleteUser,
+  getStats,
 };

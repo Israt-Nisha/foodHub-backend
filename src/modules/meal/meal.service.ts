@@ -78,11 +78,11 @@ const getAllMeals = async ({
     });
   }
 
-  if (minPrice || maxPrice) {
+  if (minPrice !== undefined || maxPrice !== undefined) {
     andConditions.push({
       price: {
-        ...(minPrice && { gte: minPrice }),
-        ...(maxPrice && { lte: maxPrice }),
+        ...(minPrice !== undefined && { gte: minPrice }),
+        ...(maxPrice !== undefined && { lte: maxPrice }),
       },
     });
   }

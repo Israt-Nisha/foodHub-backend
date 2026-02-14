@@ -6,6 +6,11 @@ const router = express.Router();
 
 router.get("/", providerController.getAllProviders);
 
+
+router.get("/stats",auth(UserRole.PROVIDER), providerController.getProviderStats);
+
+
+
 router.get("/:id", providerController.getProviderById);
 
 router.post(

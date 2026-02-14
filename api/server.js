@@ -704,7 +704,13 @@ var getAllProviders = async () => {
 var getProviderById = async (id) => {
   const provider = await prisma.providerProfile.findUnique({
     where: { id },
-    include: { meals: true }
+    include: {
+      meals: {
+        include: {
+          category: true
+        }
+      }
+    }
   });
   if (!provider) {
     const error = new Error("Provider not found");
@@ -1230,6 +1236,32 @@ var updateUserStatus = async (id, data) => {
     }
   });
 };
+var updateUser = async (id, payload) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user)
+      return {
+        data: null,
+        error: { message: "User not found", statusCode: 404 }
+      };
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: payload
+    });
+    return { data: updatedUser, error: null };
+  } catch (err) {
+    if (err.code === "P2002") {
+      return {
+        data: null,
+        error: { message: "Email already exists", statusCode: 409 }
+      };
+    }
+    return {
+      data: null,
+      error: { message: "Failed to update user", statusCode: 500 }
+    };
+  }
+};
 var deleteUser = async (id) => {
   await prisma.user.findUniqueOrThrow({ where: { id } });
   return prisma.user.delete({
@@ -1240,6 +1272,7 @@ var userService = {
   getAllUsers,
   getUserById,
   updateUserStatus,
+  updateUser,
   deleteUser
 };
 
@@ -1295,6 +1328,36 @@ var updateUserStatus2 = async (req, res, next) => {
     next(error);
   }
 };
+var updateUser2 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data, error } = await userService.updateUser(
+      id,
+      req.body
+    );
+    if (error) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+        data: null,
+        error: error.message
+      });
+    }
+    res.json({
+      success: true,
+      message: "User updated successfully!",
+      data,
+      error: null
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating user!",
+      data: null,
+      error: err?.message || "Internal Server Error!"
+    });
+  }
+};
 var deleteUser2 = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -1312,6 +1375,7 @@ var userController = {
   getAllUsers: getAllUsers2,
   getUserById: getUserById2,
   updateUserStatus: updateUserStatus2,
+  updateUser: updateUser2,
   deleteUser: deleteUser2
 };
 
@@ -1324,9 +1388,14 @@ router4.get(
   userController.getUserById
 );
 router4.patch(
-  "/users/:id",
+  "/users/:id/status",
   auth_default("ADMIN" /* ADMIN */),
   userController.updateUserStatus
+);
+router4.patch(
+  "/:id",
+  auth_default("ADMIN" /* ADMIN */, "PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */),
+  userController.updateUser
 );
 router4.delete(
   "/users/:id",

@@ -122,10 +122,33 @@ const deleteProviderProfile = async (req: Request, res: Response) => {
   }
 };
 
+const getProviderStats = async (req: Request, res: Response) => {
+  try {
+    const userId =  req.user!.id
+
+    const providerStats = await providerService.getProviderStats( userId as string );
+
+    res.status(200).json({
+      success: true,
+      message: "Provider stats fetched successfully!",
+      data: providerStats,
+      error: null,
+    });
+  } catch (err: any) {
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message,
+      data: null,
+      error: err.message,
+    });
+  }
+};
+
 export const providerController = {
   getAllProviders,
   getProviderById,
   createProviderProfile,
   updateProviderProfile,
   deleteProviderProfile,
+  getProviderStats,
 };

@@ -7,14 +7,25 @@ const router = express.Router();
 
 router.get("/users", auth(UserRole.ADMIN), userController.getAllUsers);
 
+
+router.get("/stats", auth(UserRole.ADMIN), userController.getStats);
+
+
+
 router.get(
-  "/users/:id", auth(UserRole.ADMIN), userController.getUserById
+  "/users/:id",  userController.getUserById
 )
 
 router.patch(
-  "/users/:id",
+  "/users/:id/status",
   auth(UserRole.ADMIN),
   userController.updateUserStatus,
+);
+
+router.patch(
+  "/users/:id",
+  auth(UserRole.ADMIN, UserRole.PROVIDER, UserRole.CUSTOMER),
+  userController.updateUser,
 );
 
 router.delete(

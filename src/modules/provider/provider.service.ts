@@ -1,3 +1,4 @@
+import { OrderStatus } from "../../../prisma/generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 const getAllProviders = async () => {
@@ -11,7 +12,13 @@ const getAllProviders = async () => {
 const getProviderById = async (id: string) => {
   const provider = await prisma.providerProfile.findUnique({
     where: { id },
-    include: { meals: true },
+    include: {
+      meals: {
+        include: {
+          category: true,
+        },
+      },
+    },
   });
 
   if (!provider) {
@@ -99,7 +106,7 @@ const deleteProviderProfile = async (providerId: string, userId: string, isAdmin
     throw error;
   }
 
-   await prisma.meal.deleteMany({
+  await prisma.meal.deleteMany({
     where: { providerId },
   });
 
@@ -108,10 +115,97 @@ const deleteProviderProfile = async (providerId: string, userId: string, isAdmin
   });
 };
 
+
+
+const getProviderStats = async (userId: string) => {
+  return await prisma.$transaction(async (tx) => {
+    const providerProfile = await tx.providerProfile.findUnique({
+      where: { userId },
+      select: {
+        id: true,
+        restaurantName: true,
+        logo: true,
+        userId: true,
+      },
+    });
+
+    if (!providerProfile) {
+      throw new Error("Provider profile not found");
+    }
+
+    const user = await tx.user.findUnique({
+      where: { id: providerProfile.userId },
+      select: { name: true },
+    });
+
+    const providerId = providerProfile.id;
+
+    const [
+      totalMeals,
+      totalCategoriesUsed,
+      totalOrders,
+
+      placedOrders,
+      preparingOrders,
+      readyOrders,
+      deliveredOrders,
+      cancelledOrders,
+
+      revenueResult,
+    ] = await Promise.all([
+      
+      tx.meal.count({ where: { providerId } }),
+
+      tx.meal
+        .findMany({
+          where: { providerId },
+          distinct: ["categoryId"],
+          select: { categoryId: true },
+        })
+        .then((res) => res.length),
+
+      tx.order.count({ where: { providerId } }),
+
+      tx.order.count({ where: { providerId, status: OrderStatus.PLACED } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.PREPARING } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.READY } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.DELIVERED } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.CANCELLED } }),
+
+     
+      tx.order.aggregate({
+        where: { providerId, status: OrderStatus.DELIVERED },
+        _sum: { totalAmount: true },
+      }),
+    ]);
+
+    return {
+      providerName: user?.name || "Provider",
+      restaurantName: providerProfile.restaurantName,
+      logo: providerProfile.logo || null,
+
+      totalMeals,
+      totalCategoriesUsed,
+      totalOrders,
+
+      placedOrders,
+      preparingOrders,
+      readyOrders,
+      deliveredOrders,
+      cancelledOrders,
+
+      totalRevenue: revenueResult._sum.totalAmount || 0,
+    };
+  });
+};
+
+
+
 export const providerService = {
   getAllProviders,
   getProviderById,
   createProviderProfile,
   updateProviderProfile,
   deleteProviderProfile,
+  getProviderStats,
 };
