@@ -1898,7 +1898,10 @@ var getAllOrders = async (user) => {
     const providerProfile = await prisma.providerProfile.findUnique({
       where: { userId: user.id }
     });
-    if (providerProfile) where.providerId = providerProfile.id;
+    if (!providerProfile) {
+      throw new Error("Provider profile not found");
+    }
+    where.providerId = providerProfile.id;
   }
   return prisma.order.findMany({
     where,

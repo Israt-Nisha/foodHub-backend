@@ -33,7 +33,10 @@ const getAllOrders = async (user: any) => {
       where: { userId: user.id },
     });
 
-    if (providerProfile) where.providerId = providerProfile.id;
+      if (!providerProfile) {
+      throw new Error("Provider profile not found");
+    }
+     where.providerId = providerProfile.id;
   }
 
   return prisma.order.findMany({
