@@ -72,7 +72,7 @@ const getAllMeals = async (req: Request, res: Response) => {
     const providerId = req.query.providerId as string | undefined;
 
     
-    const { page, limit, skip, sortBy, sortOrder } =
+    const { page, limit, sortBy, sortOrder } =
       paginationSortingHelper(req.query);
 
     const result = await mealService.getAllMeals({
@@ -85,17 +85,25 @@ const getAllMeals = async (req: Request, res: Response) => {
       providerId,
       page,
       limit,
-      skip,
       sortBy,
       sortOrder,
     });
 
-    res.status(200).json(result);
-  } catch (e) {
-    res.status(400).json({
-      error: "All meals getting failed",
-      details: e,
-    });
+    res.status(200).json({
+        success: true,
+        message: "Meals fetched successfully",
+        data: result,
+        error: null,
+      });;
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: err.message || "Failed to fetch meals",
+        data: null,
+        error: err.message || "Unknown error",
+      });
   }
 };
 

@@ -260,6 +260,15 @@ var NullsOrder = {
 };
 var defineExtension = runtime2.Extensions.defineExtension;
 
+// prisma/generated/prisma/enums.ts
+var OrderStatus = {
+  PLACED: "PLACED",
+  PREPARING: "PREPARING",
+  READY: "READY",
+  DELIVERED: "DELIVERED",
+  CANCELLED: "CANCELLED"
+};
+
 // prisma/generated/prisma/client.ts
 globalThis["__dirname"] = path.dirname(fileURLToPath(import.meta.url));
 var PrismaClient = getPrismaClientClass();
@@ -293,7 +302,6 @@ var getAllMeals = async ({
   providerId,
   page,
   limit,
-  skip,
   sortBy,
   sortOrder
 }) => {
@@ -326,11 +334,11 @@ var getAllMeals = async ({
       dietary
     });
   }
-  if (minPrice || maxPrice) {
+  if (minPrice !== void 0 || maxPrice !== void 0) {
     andConditions.push({
       price: {
-        ...minPrice && { gte: minPrice },
-        ...maxPrice && { lte: maxPrice }
+        ...minPrice !== void 0 && { gte: minPrice },
+        ...maxPrice !== void 0 && { lte: maxPrice }
       }
     });
   }
@@ -344,6 +352,7 @@ var getAllMeals = async ({
       providerId
     });
   }
+  const skip = (page - 1) * limit;
   const allMeals = await prisma.meal.findMany({
     take: limit,
     skip,
@@ -458,6 +467,22 @@ var auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }
+  },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60
+      // 5 minutes
+    }
+  },
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false
+    },
+    disableCSRFCheck: true
+    // Allow requests without Origin header (Postman, mobile apps, etc.)
   }
 });
 
@@ -496,12 +521,13 @@ var auth2 = (...roles) => {
 var auth_default = auth2;
 
 // src/helper/paginationSortingHelper.ts
+var allowedSortFields = ["createdAt", "price", "name"];
 var paginationSortingHelper = (options) => {
   const page = Number(options.page) || 1;
   const limit = Number(options.limit) || 10;
   const skip = (page - 1) * limit;
-  const sortBy = options.sortBy || "createdAt";
   const sortOrder = options.sortOrder === "asc" || options.sortOrder === "desc" ? options.sortOrder : "desc";
+  const sortBy = allowedSortFields.includes(options.sortBy) ? options.sortBy : "createdAt";
   return {
     page,
     limit,
@@ -548,7 +574,7 @@ var getAllMeals2 = async (req, res) => {
     const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : void 0;
     const isAvailable = req.query.isAvailable ? req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : void 0 : void 0;
     const providerId = req.query.providerId;
-    const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper_default(req.query);
+    const { page, limit, sortBy, sortOrder } = paginationSortingHelper_default(req.query);
     const result = await mealService.getAllMeals({
       search: searchString,
       cuisine,
@@ -559,15 +585,22 @@ var getAllMeals2 = async (req, res) => {
       providerId,
       page,
       limit,
-      skip,
       sortBy,
       sortOrder
     });
-    res.status(200).json(result);
-  } catch (e) {
-    res.status(400).json({
-      error: "All meals getting failed",
-      details: e
+    res.status(200).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result,
+      error: null
+    });
+    ;
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Failed to fetch meals",
+      data: null,
+      error: err.message || "Unknown error"
     });
   }
 };
@@ -775,12 +808,76 @@ var deleteProviderProfile = async (providerId, userId, isAdmin) => {
     where: { id: providerId }
   });
 };
+var getProviderStats = async (userId) => {
+  return await prisma.$transaction(async (tx) => {
+    const providerProfile = await tx.providerProfile.findUnique({
+      where: { userId },
+      select: {
+        id: true,
+        restaurantName: true,
+        logo: true,
+        userId: true
+      }
+    });
+    if (!providerProfile) {
+      throw new Error("Provider profile not found");
+    }
+    const user = await tx.user.findUnique({
+      where: { id: providerProfile.userId },
+      select: { name: true }
+    });
+    const providerId = providerProfile.id;
+    const [
+      totalMeals,
+      totalCategoriesUsed,
+      totalOrders,
+      placedOrders,
+      preparingOrders,
+      readyOrders,
+      deliveredOrders,
+      cancelledOrders,
+      revenueResult
+    ] = await Promise.all([
+      tx.meal.count({ where: { providerId } }),
+      tx.meal.findMany({
+        where: { providerId },
+        distinct: ["categoryId"],
+        select: { categoryId: true }
+      }).then((res) => res.length),
+      tx.order.count({ where: { providerId } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.PLACED } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.PREPARING } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.READY } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.DELIVERED } }),
+      tx.order.count({ where: { providerId, status: OrderStatus.CANCELLED } }),
+      tx.order.aggregate({
+        where: { providerId, status: OrderStatus.DELIVERED },
+        _sum: { totalAmount: true }
+      })
+    ]);
+    return {
+      providerName: user?.name || "Provider",
+      restaurantName: providerProfile.restaurantName,
+      logo: providerProfile.logo || null,
+      totalMeals,
+      totalCategoriesUsed,
+      totalOrders,
+      placedOrders,
+      preparingOrders,
+      readyOrders,
+      deliveredOrders,
+      cancelledOrders,
+      totalRevenue: revenueResult._sum.totalAmount || 0
+    };
+  });
+};
 var providerService = {
   getAllProviders,
   getProviderById,
   createProviderProfile,
   updateProviderProfile,
-  deleteProviderProfile
+  deleteProviderProfile,
+  getProviderStats
 };
 
 // src/modules/provider/provider.controller.ts
@@ -889,17 +986,38 @@ var deleteProviderProfile2 = async (req, res) => {
     });
   }
 };
+var getProviderStats2 = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const providerStats = await providerService.getProviderStats(userId);
+    res.status(200).json({
+      success: true,
+      message: "Provider stats fetched successfully!",
+      data: providerStats,
+      error: null
+    });
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message,
+      data: null,
+      error: err.message
+    });
+  }
+};
 var providerController = {
   getAllProviders: getAllProviders2,
   getProviderById: getProviderById2,
   createProviderProfile: createProviderProfile2,
   updateProviderProfile: updateProviderProfile2,
-  deleteProviderProfile: deleteProviderProfile2
+  deleteProviderProfile: deleteProviderProfile2,
+  getProviderStats: getProviderStats2
 };
 
 // src/modules/provider/provider.router.ts
 var router2 = express2.Router();
 router2.get("/", providerController.getAllProviders);
+router2.get("/stats", auth_default("PROVIDER" /* PROVIDER */), providerController.getProviderStats);
 router2.get("/:id", providerController.getProviderById);
 router2.post(
   "/profile",
@@ -1268,12 +1386,72 @@ var deleteUser = async (id) => {
     where: { id }
   });
 };
+var getStats = async () => {
+  return await prisma.$transaction(async (tx) => {
+    const [
+      totalUsers,
+      totalAdmins,
+      totalCustomers,
+      totalProviders,
+      activeUsers,
+      suspendedUsers,
+      totalMeals,
+      totalCategories,
+      totalProviderProfiles,
+      totalOrders,
+      placedOrders,
+      readyOrders,
+      preparingOrders,
+      deliveredOrders,
+      cancelledOrders,
+      revenueResult
+    ] = await Promise.all([
+      tx.user.count(),
+      tx.user.count({ where: { role: "ADMIN" } }),
+      tx.user.count({ where: { role: "CUSTOMER" } }),
+      tx.user.count({ where: { role: "PROVIDER" } }),
+      tx.user.count({ where: { status: "ACTIVE" } }),
+      tx.user.count({ where: { status: "SUSPENDED" } }),
+      tx.meal.count(),
+      tx.category.count(),
+      tx.providerProfile.count(),
+      tx.order.count(),
+      tx.order.count({ where: { status: OrderStatus.PLACED } }),
+      tx.order.count({ where: { status: OrderStatus.PREPARING } }),
+      tx.order.count({ where: { status: OrderStatus.READY } }),
+      tx.order.count({ where: { status: OrderStatus.DELIVERED } }),
+      tx.order.count({ where: { status: OrderStatus.CANCELLED } }),
+      tx.order.aggregate({
+        _sum: { totalAmount: true }
+      })
+    ]);
+    return {
+      totalUsers,
+      totalAdmins,
+      totalCustomers,
+      totalProviders,
+      activeUsers,
+      suspendedUsers,
+      totalMeals,
+      totalCategories,
+      totalProviderProfiles,
+      totalOrders,
+      placedOrders,
+      readyOrders,
+      preparingOrders,
+      deliveredOrders,
+      cancelledOrders,
+      totalRevenue: revenueResult._sum.totalAmount || 0
+    };
+  });
+};
 var userService = {
   getAllUsers,
   getUserById,
   updateUserStatus,
   updateUser,
-  deleteUser
+  deleteUser,
+  getStats
 };
 
 // src/modules/user/user.controller.ts
@@ -1371,20 +1549,33 @@ var deleteUser2 = async (req, res, next) => {
     next(error);
   }
 };
+var getStats2 = async (req, res) => {
+  try {
+    const result = await userService.getStats();
+    res.status(200).json(result);
+  } catch (e) {
+    const errorMessage = e instanceof Error ? e.message : "Stats fetched failed!";
+    res.status(400).json({
+      error: errorMessage,
+      details: e
+    });
+  }
+};
 var userController = {
   getAllUsers: getAllUsers2,
   getUserById: getUserById2,
   updateUserStatus: updateUserStatus2,
   updateUser: updateUser2,
-  deleteUser: deleteUser2
+  deleteUser: deleteUser2,
+  getStats: getStats2
 };
 
 // src/modules/user/user.router.ts
 var router4 = express4.Router();
 router4.get("/users", auth_default("ADMIN" /* ADMIN */), userController.getAllUsers);
+router4.get("/stats", auth_default("ADMIN" /* ADMIN */), userController.getStats);
 router4.get(
   "/users/:id",
-  auth_default("ADMIN" /* ADMIN */),
   userController.getUserById
 );
 router4.patch(
@@ -1393,7 +1584,7 @@ router4.patch(
   userController.updateUserStatus
 );
 router4.patch(
-  "/:id",
+  "/users/:id",
   auth_default("ADMIN" /* ADMIN */, "PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */),
   userController.updateUser
 );
@@ -2135,10 +2326,26 @@ var reviewRouter = router7;
 // src/app.ts
 var app = express8();
 app.use(express8.json());
+var allowedOrigins = [
+  process.env.APP_URL || "http://localhost:3000",
+  process.env.PROD_APP_URL
+  // Production frontend URL
+].filter(Boolean);
 app.use(
   cors({
-    origin: process.env.APP_URL || "http://localhost:3000",
-    credentials: true
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"]
   })
 );
 app.all("/api/auth/{*splat}", toNodeHandler(auth));

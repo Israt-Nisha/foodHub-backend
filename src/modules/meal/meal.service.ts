@@ -28,7 +28,6 @@ const getAllMeals = async ({
   providerId,
   page,
   limit,
-  skip,
   sortBy,
   sortOrder,
 }: {
@@ -41,7 +40,6 @@ const getAllMeals = async ({
   providerId: string | undefined;
   page: number;
   limit: number;
-  skip: number;
   sortBy: string;
   sortOrder: "asc" | "desc";
 }) => {
@@ -99,7 +97,7 @@ const getAllMeals = async ({
       providerId,
     });
   }
-
+  const skip = (page - 1) * limit;
   const allMeals = await prisma.meal.findMany({
     take: limit,
     skip,
@@ -154,19 +152,19 @@ const updateMeal = async (id: string, data: Partial<Meal>, userId: string) => {
   const meal = await prisma.meal.findUnique({ where: { id } });
   if (!meal) throw new Error("Meal not found");
 
-  if(meal.providerId !== provider.id) {
+  if (meal.providerId !== provider.id) {
     throw new Error("You are not allowed to update this meal");
   }
 
   return prisma.meal.update({
-    where: { id : meal.id },
+    where: { id: meal.id },
     data
   });
 };
 
 
 const deleteMeal = async (id: string, userId: string, isAdmin: boolean) => {
- 
+
   let providerId: string | null = null;
 
   if (!isAdmin) {
@@ -188,9 +186,9 @@ const deleteMeal = async (id: string, userId: string, isAdmin: boolean) => {
 };
 
 export const mealService = {
-    createMeal,
-    getAllMeals,
-    getMealById,
-    updateMeal,
-    deleteMeal,
+  createMeal,
+  getAllMeals,
+  getMealById,
+  updateMeal,
+  deleteMeal,
 }
