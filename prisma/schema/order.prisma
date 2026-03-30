@@ -5,20 +5,26 @@ model Order {
   address     String
   totalAmount Float
   status      OrderStatus @default(PLACED)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   provider ProviderProfile @relation("ProviderOrders", fields: [providerId], references: [id])
 
   items OrderItem[]
 
+  payment Payment[]
+
   @@map("orders")
 }
 
 enum OrderStatus {
-    PLACED
-    PREPARING
-    READY
-    DELIVERED
-    CANCELLED
+  PLACED
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
 }

@@ -1,28 +1,118 @@
-import { OrderStatus } from "../../../prisma/generated/prisma/enums";
+import { OrderStatus, PaymentMethod, PaymentStatus } from "../../../prisma/generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../types/user.role";
 
 
+import Stripe from "stripe";
+import { stripe } from "../../config/stripe.config";
 
-const createOrder = async (payload: any, userId: string) => {
+
+
+interface OrderItemPayload {
+  mealId: string; // ✅ Required
+  quantity: number;
+  price: number;
+}
+
+interface CreateOrderPayload {
+  providerId: string;
+  address: string;
+  totalAmount: number;
+  items: OrderItemPayload[];
+  paymentMethod: "COD" | "ONLINE";
+}
+
+const createOrder = async (payload: CreateOrderPayload, userId: string) => {
+  // 1️⃣ Validate provider
   const provider = await prisma.providerProfile.findUnique({
     where: { id: payload.providerId },
   });
   if (!provider) throw new Error("Provider not found");
 
-  const order = await prisma.order.create({
-    data: {
-      customerId: userId,
-      providerId: payload.providerId,
-      address: payload.address,
-      totalAmount: payload.totalAmount,
-      items: { create: payload.items },
-    },
-    include: { items: true },
-  });
+  // 2️⃣ CASH ON DELIVERY Flow
+  if (payload.paymentMethod === "COD") {
+    const order = await prisma.$transaction(async (tx) => {
+      const createdOrder = await tx.order.create({
+        data: {
+          customerId: userId,
+          providerId: payload.providerId,
+          address: payload.address,
+          totalAmount: payload.totalAmount,
+          paymentMethod: PaymentMethod.COD,
+          paymentStatus: PaymentStatus.PENDING,
+          items: {
+            create: payload.items.map((item) => ({
+              quantity: item.quantity,
+              price: item.price,
+              meal: { connect: { id: item.mealId } }, // ✅ Connect existing meal
+            })),
+          },
+        },
+        include: { items: true },
+      });
 
-  return order;
+      // Create Payment entry
+      await tx.payment.create({
+        data: {
+          orderId: createdOrder.id,
+          amount: payload.totalAmount,
+          method: PaymentMethod.COD,
+          status: PaymentStatus.PENDING,
+        },
+      });
+
+      return createdOrder;
+    });
+
+    return {
+      type: "COD",
+      order,
+    };
+  }
+
+  // 3️⃣ ONLINE Payment (Stripe) Flow
+  if (payload.paymentMethod === "ONLINE") {
+    const payment = await prisma.payment.create({
+      data: {
+        amount: payload.totalAmount,
+        method: PaymentMethod.ONLINE,
+        status: PaymentStatus.PENDING,
+      },
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: payload.items.map((item) => ({
+        price_data: {
+          currency: "bdt",
+          product_data: { name: `Meal ${item.mealId}` }, // you can customize
+          unit_amount: item.price * 100,
+        },
+        quantity: item.quantity,
+      })),
+      mode: "payment",
+      success_url: `${process.env.APP_URL}/success?paymentId=${payment.id}`,
+      cancel_url: `${process.env.APP_URL}/cancel?paymentId=${payment.id}`,
+      metadata: {
+        paymentId: payment.id,
+        customerId: userId,
+        providerId: payload.providerId,
+        address: payload.address, // 🔥 ADD THIS
+        items: JSON.stringify(payload.items),
+      }
+    });
+
+    return {
+      type: "ONLINE",
+      paymentId: payment.id,
+      clientSecret: session.payment_intent,
+      checkoutUrl: session.url,
+    };
+  }
+
+  throw new Error("Invalid payment method");
 };
+
 
 const getAllOrders = async (user: any) => {
   const where: any = {};
@@ -33,10 +123,10 @@ const getAllOrders = async (user: any) => {
       where: { userId: user.id },
     });
 
-      if (!providerProfile) {
+    if (!providerProfile) {
       throw new Error("Provider profile not found");
     }
-     where.providerId = providerProfile.id;
+    where.providerId = providerProfile.id;
   }
 
   return prisma.order.findMany({

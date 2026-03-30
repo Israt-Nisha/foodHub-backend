@@ -1,4 +1,4 @@
-import express, {Application} from "express"
+import express, {Application, Request, Response} from "express"
 import { mealRouter } from "./modules/meal/meal.router";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
@@ -11,8 +11,12 @@ import errorHandler from "./middlewares/globalErrorHandler";
 import { cartRouter } from "./modules/cart/cart.router";
 import { orderRouter } from "./modules/order/order.router";
 import { reviewRouter } from "./modules/review/review.router";
+import { PaymentController } from "./modules/payment/payment.controller";
 
 const app: Application = express();
+
+
+app.post("/webhook", express.raw({ type: "application/json" }),PaymentController.handleStripeWebhookEvent)
 
 app.use(express.json());
 
