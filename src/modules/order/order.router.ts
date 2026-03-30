@@ -18,6 +18,12 @@ router.get(
   orderController.getOrderById,
 );
 
+router.get(
+  "/by-payment/:paymentId",
+  auth(UserRole.CUSTOMER, UserRole.PROVIDER, UserRole.ADMIN),
+  orderController.getOrderByPaymentId
+);
+
 router.patch(
   "/:id", auth(UserRole.PROVIDER, UserRole.CUSTOMER),
    orderController.updateOrderStatus,

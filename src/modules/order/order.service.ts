@@ -91,7 +91,7 @@ const createOrder = async (payload: CreateOrderPayload, userId: string) => {
         quantity: item.quantity,
       })),
       mode: "payment",
-      success_url: `${process.env.APP_URL}/success?paymentId=${payment.id}`,
+      success_url: `${process.env.APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
       cancel_url: `${process.env.APP_URL}/cancel?paymentId=${payment.id}`,
       metadata: {
         paymentId: payment.id,
@@ -145,6 +145,50 @@ const getOrderById = async (id: string, user: any) => {
     include: { items: { include: { meal: true } } },
   });
   if (!order) return null;
+
+  if (user.role === "PROVIDER") {
+    const providerProfile = await prisma.providerProfile.findUnique({
+      where: { userId: user.id },
+    });
+
+    if (!providerProfile || order.providerId !== providerProfile.id) {
+      throw new Error("Not authorized");
+    }
+  }
+
+  return order;
+};
+
+const getOrderByPaymentId = async (paymentId: string, user: any) => {
+  const payment = await prisma.payment.findUnique({
+    where: { id: paymentId },
+    include: {
+      order: {
+        include: {
+          items: {
+            include: { meal: true },
+          },
+          provider: true,
+        },
+      },
+    },
+  });
+
+  
+  if (!payment) {
+    throw new Error("Payment not found");
+  }
+
+  
+  if (!payment.order) {
+    return null;
+  }
+
+  const order = payment.order;
+
+  if (user.role === "CUSTOMER" && order.customerId !== user.id) {
+    throw new Error("Not authorized");
+  }
 
   if (user.role === "PROVIDER") {
     const providerProfile = await prisma.providerProfile.findUnique({
@@ -221,6 +265,7 @@ export const orderService = {
   createOrder,
   getAllOrders,
   getOrderById,
+  getOrderByPaymentId,
   updateOrderStatus,
   deleteOrder,
 };

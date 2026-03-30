@@ -84,6 +84,59 @@ const getOrderById = async (req: Request, res: Response) => {
 };
 
 
+const getOrderByPaymentId = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+        data: null,
+        error: "User not authenticated",
+      });
+    }
+
+    const { paymentId } = req.params;
+
+    if (!paymentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment ID is required",
+        data: null,
+        error: "Missing paymentId",
+      });
+    }
+
+    const order = await orderService.getOrderByPaymentId(
+      paymentId as string,
+      req.user
+    );
+
+    if (!order) {
+      return res.status(200).json({
+        success: true,
+        message: "Order not created yet",
+        data: null,
+        error: null,
+      });
+    }
+
+    
+    return res.status(200).json({
+      success: true,
+      message: "Order fetched successfully",
+      data: { order },
+      error: null,
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Failed to fetch order",
+      data: null,
+      error: err.message || "Unknown error",
+    });
+  }
+};
+
 
 const updateOrderStatus = async (req: Request, res: Response) => {
   try {
@@ -150,6 +203,7 @@ export const orderController = {
   createOrder,
   getAllOrders,
   getOrderById,
+  getOrderByPaymentId,
   updateOrderStatus,
   deleteOrder,
 };
