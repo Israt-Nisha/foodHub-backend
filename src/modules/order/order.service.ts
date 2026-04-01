@@ -91,8 +91,10 @@ const createOrder = async (payload: CreateOrderPayload, userId: string) => {
         quantity: item.quantity,
       })),
       mode: "payment",
-      success_url: `${process.env.APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
-      cancel_url: `${process.env.APP_URL}/cancel?paymentId=${payment.id}`,
+      success_url: `${process.env.PROD_APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
+      cancel_url: `${process.env.PROD_APP_URL}/cancel?paymentId=${payment.id}`,
+      // success_url: `${process.env.APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
+      // cancel_url: `${process.env.APP_URL}/cancel?paymentId=${payment.id}`,
       metadata: {
         paymentId: payment.id,
         customerId: userId,

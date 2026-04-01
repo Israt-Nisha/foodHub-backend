@@ -25,14 +25,14 @@ var config = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": 'model User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  role          String?   @default("CUSTOMER")\n  status        String?   @default("ACTIVE")\n  sessions      Session[]\n  accounts      Account[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nenum Role {\n  CUSTOMER\n  PROVIDER\n  ADMIN\n}\n\nenum UserStatus {\n  ACTIVE\n  SUSPENDED\n}\n\nmodel CartItem {\n  id        String   @id @default(uuid())\n  userId    String\n  mealId    String\n  quantity  Int      @default(1)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  mealName  String\n  mealPrice Float\n  mealImage String?\n\n  @@index([userId])\n  @@map("cart_items")\n}\n\nmodel Category {\n  id       String  @id @default(uuid())\n  name     String  @unique\n  slug     String  @unique\n  imageUrl String?\n  meals    Meal[]\n\n  @@map("categories")\n}\n\nmodel Meal {\n  id          String  @id @default(uuid())\n  name        String\n  description String\n  price       Float\n  imageUrl    String?\n  isAvailable Boolean @default(true)\n\n  cuisine CuisineType\n  dietary DietaryType\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  userId     String\n  providerId String\n  categoryId String\n\n  provider ProviderProfile @relation(fields: [providerId], references: [id])\n  category Category        @relation(fields: [categoryId], references: [id])\n\n  orderItems OrderItem[]\n  reviews    Review[]\n\n  @@index([providerId])\n  @@map("meals")\n}\n\nenum CuisineType {\n  BENGALI\n  INDIAN\n  CHINESE\n  ITALIAN\n  THAI\n}\n\nenum DietaryType {\n  VEG\n  NON_VEG\n  VEGAN\n  HALAL\n}\n\nmodel Order {\n  id          String      @id @default(uuid())\n  customerId  String\n  providerId  String\n  address     String\n  totalAmount Float\n  status      OrderStatus @default(PLACED)\n  createdAt   DateTime    @default(now())\n  updatedAt   DateTime    @updatedAt\n\n  provider ProviderProfile @relation("ProviderOrders", fields: [providerId], references: [id])\n\n  items OrderItem[]\n\n  @@map("orders")\n}\n\nenum OrderStatus {\n  PLACED\n  PREPARING\n  READY\n  DELIVERED\n  CANCELLED\n}\n\nmodel OrderItem {\n  id        String   @id @default(uuid())\n  orderId   String\n  mealId    String\n  quantity  Int\n  price     Float\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  meal  Meal  @relation(fields: [mealId], references: [id])\n}\n\nmodel ProviderProfile {\n  id             String   @id @default(uuid())\n  userId         String   @unique\n  restaurantName String\n  address        String\n  phone          String\n  logo           String?\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  meals  Meal[]\n  orders Order[] @relation("ProviderOrders")\n\n  @@index([userId])\n  @@map("providers")\n}\n\nmodel Review {\n  id        String   @id @default(uuid())\n  rating    Int\n  comment   String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  mealId String\n  userId String\n\n  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)\n\n  @@unique([mealId, userId])\n  @@map("reviews")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n',
+  "inlineSchema": 'model User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  role          String?   @default("CUSTOMER")\n  status        String?   @default("ACTIVE")\n  sessions      Session[]\n  accounts      Account[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nenum Role {\n  CUSTOMER\n  PROVIDER\n  ADMIN\n}\n\nenum UserStatus {\n  ACTIVE\n  SUSPENDED\n}\n\nmodel CartItem {\n  id        String   @id @default(uuid())\n  userId    String\n  mealId    String\n  quantity  Int      @default(1)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  mealName  String\n  mealPrice Float\n  mealImage String?\n\n  @@index([userId])\n  @@map("cart_items")\n}\n\nmodel Category {\n  id       String  @id @default(uuid())\n  name     String  @unique\n  slug     String  @unique\n  imageUrl String?\n  meals    Meal[]\n\n  @@map("categories")\n}\n\nmodel Meal {\n  id          String  @id @default(uuid())\n  name        String\n  description String\n  price       Float\n  imageUrl    String?\n  isAvailable Boolean @default(true)\n\n  cuisine CuisineType\n  dietary DietaryType\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  userId     String\n  providerId String\n  categoryId String\n\n  provider ProviderProfile @relation(fields: [providerId], references: [id])\n  category Category        @relation(fields: [categoryId], references: [id])\n\n  orderItems OrderItem[]\n  reviews    Review[]\n\n  @@index([providerId])\n  @@map("meals")\n}\n\nenum CuisineType {\n  BENGALI\n  INDIAN\n  CHINESE\n  ITALIAN\n  THAI\n}\n\nenum DietaryType {\n  VEG\n  NON_VEG\n  VEGAN\n  HALAL\n}\n\nmodel Order {\n  id          String      @id @default(uuid())\n  customerId  String\n  providerId  String\n  address     String\n  totalAmount Float\n  status      OrderStatus @default(PLACED)\n\n  paymentMethod PaymentMethod\n  paymentStatus PaymentStatus @default(PENDING)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  provider ProviderProfile @relation("ProviderOrders", fields: [providerId], references: [id])\n\n  items OrderItem[]\n\n  payment Payment[]\n\n  @@map("orders")\n}\n\nenum OrderStatus {\n  PLACED\n  PREPARING\n  READY\n  DELIVERED\n  CANCELLED\n}\n\nmodel OrderItem {\n  id        String   @id @default(uuid())\n  orderId   String\n  mealId    String\n  quantity  Int\n  price     Float\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  meal  Meal  @relation(fields: [mealId], references: [id])\n}\n\nmodel Payment {\n  id      String  @id @default(uuid())\n  orderId String?\n  order   Order?  @relation(fields: [orderId], references: [id], onDelete: Cascade)\n\n  amount             Float\n  method             PaymentMethod\n  status             PaymentStatus @default(PENDING)\n  transactionId      String?       @unique\n  stripeEventId      String?       @unique\n  paymentGatewayData Json?\n  invoiceUrl         String?\n  createdAt          DateTime      @default(now())\n  updatedAt          DateTime      @updatedAt\n\n  @@index([orderId])\n  @@map("payments")\n}\n\nenum PaymentMethod {\n  COD\n  ONLINE\n}\n\nenum PaymentStatus {\n  PENDING\n  PAID\n  FAILED\n  REFUNDED\n}\n\nmodel ProviderProfile {\n  id             String   @id @default(uuid())\n  userId         String   @unique\n  restaurantName String\n  address        String\n  phone          String\n  logo           String?\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  meals  Meal[]\n  orders Order[] @relation("ProviderOrders")\n\n  @@index([userId])\n  @@map("providers")\n}\n\nmodel Review {\n  id        String   @id @default(uuid())\n  rating    Int\n  comment   String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  mealId String\n  userId String\n\n  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)\n\n  @@unique([mealId, userId])\n  @@map("reviews")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
     "types": {}
   }
 };
-config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"role","kind":"scalar","type":"String"},{"name":"status","kind":"scalar","type":"String"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"CartItem":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"mealName","kind":"scalar","type":"String"},{"name":"mealPrice","kind":"scalar","type":"Float"},{"name":"mealImage","kind":"scalar","type":"String"}],"dbName":"cart_items"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"slug","kind":"scalar","type":"String"},{"name":"imageUrl","kind":"scalar","type":"String"},{"name":"meals","kind":"object","type":"Meal","relationName":"CategoryToMeal"}],"dbName":"categories"},"Meal":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Float"},{"name":"imageUrl","kind":"scalar","type":"String"},{"name":"isAvailable","kind":"scalar","type":"Boolean"},{"name":"cuisine","kind":"enum","type":"CuisineType"},{"name":"dietary","kind":"enum","type":"DietaryType"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"provider","kind":"object","type":"ProviderProfile","relationName":"MealToProviderProfile"},{"name":"category","kind":"object","type":"Category","relationName":"CategoryToMeal"},{"name":"orderItems","kind":"object","type":"OrderItem","relationName":"MealToOrderItem"},{"name":"reviews","kind":"object","type":"Review","relationName":"MealToReview"}],"dbName":"meals"},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"customerId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"totalAmount","kind":"scalar","type":"Float"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"provider","kind":"object","type":"ProviderProfile","relationName":"ProviderOrders"},{"name":"items","kind":"object","type":"OrderItem","relationName":"OrderToOrderItem"}],"dbName":"orders"},"OrderItem":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"price","kind":"scalar","type":"Float"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"order","kind":"object","type":"Order","relationName":"OrderToOrderItem"},{"name":"meal","kind":"object","type":"Meal","relationName":"MealToOrderItem"}],"dbName":null},"ProviderProfile":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"restaurantName","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"phone","kind":"scalar","type":"String"},{"name":"logo","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"meals","kind":"object","type":"Meal","relationName":"MealToProviderProfile"},{"name":"orders","kind":"object","type":"Order","relationName":"ProviderOrders"}],"dbName":"providers"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"comment","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meal","relationName":"MealToReview"}],"dbName":"reviews"}},"enums":{},"types":{}}');
+config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"role","kind":"scalar","type":"String"},{"name":"status","kind":"scalar","type":"String"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"CartItem":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"mealName","kind":"scalar","type":"String"},{"name":"mealPrice","kind":"scalar","type":"Float"},{"name":"mealImage","kind":"scalar","type":"String"}],"dbName":"cart_items"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"slug","kind":"scalar","type":"String"},{"name":"imageUrl","kind":"scalar","type":"String"},{"name":"meals","kind":"object","type":"Meal","relationName":"CategoryToMeal"}],"dbName":"categories"},"Meal":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Float"},{"name":"imageUrl","kind":"scalar","type":"String"},{"name":"isAvailable","kind":"scalar","type":"Boolean"},{"name":"cuisine","kind":"enum","type":"CuisineType"},{"name":"dietary","kind":"enum","type":"DietaryType"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"provider","kind":"object","type":"ProviderProfile","relationName":"MealToProviderProfile"},{"name":"category","kind":"object","type":"Category","relationName":"CategoryToMeal"},{"name":"orderItems","kind":"object","type":"OrderItem","relationName":"MealToOrderItem"},{"name":"reviews","kind":"object","type":"Review","relationName":"MealToReview"}],"dbName":"meals"},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"customerId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"totalAmount","kind":"scalar","type":"Float"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"paymentMethod","kind":"enum","type":"PaymentMethod"},{"name":"paymentStatus","kind":"enum","type":"PaymentStatus"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"provider","kind":"object","type":"ProviderProfile","relationName":"ProviderOrders"},{"name":"items","kind":"object","type":"OrderItem","relationName":"OrderToOrderItem"},{"name":"payment","kind":"object","type":"Payment","relationName":"OrderToPayment"}],"dbName":"orders"},"OrderItem":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"price","kind":"scalar","type":"Float"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"order","kind":"object","type":"Order","relationName":"OrderToOrderItem"},{"name":"meal","kind":"object","type":"Meal","relationName":"MealToOrderItem"}],"dbName":null},"Payment":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"order","kind":"object","type":"Order","relationName":"OrderToPayment"},{"name":"amount","kind":"scalar","type":"Float"},{"name":"method","kind":"enum","type":"PaymentMethod"},{"name":"status","kind":"enum","type":"PaymentStatus"},{"name":"transactionId","kind":"scalar","type":"String"},{"name":"stripeEventId","kind":"scalar","type":"String"},{"name":"paymentGatewayData","kind":"scalar","type":"Json"},{"name":"invoiceUrl","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"payments"},"ProviderProfile":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"restaurantName","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"phone","kind":"scalar","type":"String"},{"name":"logo","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"meals","kind":"object","type":"Meal","relationName":"MealToProviderProfile"},{"name":"orders","kind":"object","type":"Order","relationName":"ProviderOrders"}],"dbName":"providers"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"comment","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meal","relationName":"MealToReview"}],"dbName":"reviews"}},"enums":{},"types":{}}');
 async function decodeBase64AsWasm(wasmBase64) {
   const { Buffer: Buffer2 } = await import("buffer");
   const wasmArray = Buffer2.from(wasmBase64, "base64");
@@ -60,12 +60,15 @@ __export(prismaNamespace_exports, {
   DbNull: () => DbNull2,
   Decimal: () => Decimal2,
   JsonNull: () => JsonNull2,
+  JsonNullValueFilter: () => JsonNullValueFilter,
   MealScalarFieldEnum: () => MealScalarFieldEnum,
   ModelName: () => ModelName,
   NullTypes: () => NullTypes2,
+  NullableJsonNullValueInput: () => NullableJsonNullValueInput,
   NullsOrder: () => NullsOrder,
   OrderItemScalarFieldEnum: () => OrderItemScalarFieldEnum,
   OrderScalarFieldEnum: () => OrderScalarFieldEnum,
+  PaymentScalarFieldEnum: () => PaymentScalarFieldEnum,
   PrismaClientInitializationError: () => PrismaClientInitializationError2,
   PrismaClientKnownRequestError: () => PrismaClientKnownRequestError2,
   PrismaClientRustPanicError: () => PrismaClientRustPanicError2,
@@ -123,6 +126,7 @@ var ModelName = {
   Meal: "Meal",
   Order: "Order",
   OrderItem: "OrderItem",
+  Payment: "Payment",
   ProviderProfile: "ProviderProfile",
   Review: "Review"
 };
@@ -215,6 +219,8 @@ var OrderScalarFieldEnum = {
   address: "address",
   totalAmount: "totalAmount",
   status: "status",
+  paymentMethod: "paymentMethod",
+  paymentStatus: "paymentStatus",
   createdAt: "createdAt",
   updatedAt: "updatedAt"
 };
@@ -224,6 +230,19 @@ var OrderItemScalarFieldEnum = {
   mealId: "mealId",
   quantity: "quantity",
   price: "price",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
+};
+var PaymentScalarFieldEnum = {
+  id: "id",
+  orderId: "orderId",
+  amount: "amount",
+  method: "method",
+  status: "status",
+  transactionId: "transactionId",
+  stripeEventId: "stripeEventId",
+  paymentGatewayData: "paymentGatewayData",
+  invoiceUrl: "invoiceUrl",
   createdAt: "createdAt",
   updatedAt: "updatedAt"
 };
@@ -250,6 +269,10 @@ var SortOrder = {
   asc: "asc",
   desc: "desc"
 };
+var NullableJsonNullValueInput = {
+  DbNull: DbNull2,
+  JsonNull: JsonNull2
+};
 var QueryMode = {
   default: "default",
   insensitive: "insensitive"
@@ -257,6 +280,11 @@ var QueryMode = {
 var NullsOrder = {
   first: "first",
   last: "last"
+};
+var JsonNullValueFilter = {
+  DbNull: DbNull2,
+  JsonNull: JsonNull2,
+  AnyNull: AnyNull2
 };
 var defineExtension = runtime2.Extensions.defineExtension;
 
@@ -267,6 +295,16 @@ var OrderStatus = {
   READY: "READY",
   DELIVERED: "DELIVERED",
   CANCELLED: "CANCELLED"
+};
+var PaymentMethod = {
+  COD: "COD",
+  ONLINE: "ONLINE"
+};
+var PaymentStatus = {
+  PENDING: "PENDING",
+  PAID: "PAID",
+  FAILED: "FAILED",
+  REFUNDED: "REFUNDED"
 };
 
 // prisma/generated/prisma/client.ts
@@ -1873,23 +1911,169 @@ var cartRouter = router5;
 // src/modules/order/order.router.ts
 import express6 from "express";
 
+// src/config/stripe.config.ts
+import Stripe from "stripe";
+
+// src/config/env.ts
+import dotenv from "dotenv";
+dotenv.config();
+var loadEnvVariables = () => {
+  const requireEnvVariable = [
+    "NODE_ENV",
+    "PORT",
+    // 'DATABASE_URL',
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    // 'ACCESS_TOKEN_SECRET',
+    // 'REFRESH_TOKEN_SECRET',
+    // 'ACCESS_TOKEN_EXPIRES_IN',
+    // 'REFRESH_TOKEN_EXPIRES_IN',
+    // 'BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN',
+    // 'BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE'
+    // 'EMAIL_SENDER_SMTP_USER',
+    // 'EMAIL_SENDER_SMTP_PASS',
+    // 'EMAIL_SENDER_SMTP_HOST',
+    // 'EMAIL_SENDER_SMTP_PORT',
+    // 'EMAIL_SENDER_SMTP_FROM',
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    // 'GOOGLE_CALLBACK_URL',
+    "APP_URL",
+    // 'CLOUDINARY_CLOUD_NAME',
+    // 'CLOUDINARY_API_KEY',
+    // 'CLOUDINARY_API_SECRET',
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET"
+    // 'SUPER_ADMIN_EMAIL',
+    // 'SUPER_ADMIN_PASSWORD',
+  ];
+  requireEnvVariable.forEach((variable) => {
+    if (!process.env[variable]) {
+      throw new Error(`Environment variable ${variable} is required but not set in .env file.`);
+    }
+  });
+  return {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT,
+    // DATABASE_URL: process.env.DATABASE_URL as string,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    // ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET as string,
+    // REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
+    // ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN as string,
+    // REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN as string,
+    // BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN as string,
+    // BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: process.env.BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE as string,
+    // EMAIL_SENDER: {
+    //     SMTP_USER: process.env.EMAIL_SENDER_SMTP_USER as string,
+    //     SMTP_PASS: process.env.EMAIL_SENDER_SMTP_PASS as string,
+    //     SMTP_HOST: process.env.EMAIL_SENDER_SMTP_HOST as string,
+    //     SMTP_PORT: process.env.EMAIL_SENDER_SMTP_PORT as string,
+    //     SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM as string,
+    // },
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    // GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
+    APP_URL: process.env.APP_URL,
+    // CLOUDINARY: {
+    //     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+    //     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+    //     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+    // },
+    STRIPE: {
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET
+    }
+    // SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
+    // SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+  };
+};
+var envVars = loadEnvVariables();
+
+// src/config/stripe.config.ts
+var stripe = new Stripe(envVars.STRIPE.STRIPE_SECRET_KEY);
+
 // src/modules/order/order.service.ts
 var createOrder = async (payload, userId) => {
   const provider = await prisma.providerProfile.findUnique({
     where: { id: payload.providerId }
   });
   if (!provider) throw new Error("Provider not found");
-  const order = await prisma.order.create({
-    data: {
-      customerId: userId,
-      providerId: payload.providerId,
-      address: payload.address,
-      totalAmount: payload.totalAmount,
-      items: { create: payload.items }
-    },
-    include: { items: true }
-  });
-  return order;
+  if (payload.paymentMethod === "COD") {
+    const order = await prisma.$transaction(async (tx) => {
+      const createdOrder = await tx.order.create({
+        data: {
+          customerId: userId,
+          providerId: payload.providerId,
+          address: payload.address,
+          totalAmount: payload.totalAmount,
+          paymentMethod: PaymentMethod.COD,
+          paymentStatus: PaymentStatus.PENDING,
+          items: {
+            create: payload.items.map((item) => ({
+              quantity: item.quantity,
+              price: item.price,
+              meal: { connect: { id: item.mealId } }
+              // ✅ Connect existing meal
+            }))
+          }
+        },
+        include: { items: true }
+      });
+      await tx.payment.create({
+        data: {
+          orderId: createdOrder.id,
+          amount: payload.totalAmount,
+          method: PaymentMethod.COD,
+          status: PaymentStatus.PENDING
+        }
+      });
+      return createdOrder;
+    });
+    return {
+      type: "COD",
+      order
+    };
+  }
+  if (payload.paymentMethod === "ONLINE") {
+    const payment = await prisma.payment.create({
+      data: {
+        amount: payload.totalAmount,
+        method: PaymentMethod.ONLINE,
+        status: PaymentStatus.PENDING
+      }
+    });
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: payload.items.map((item) => ({
+        price_data: {
+          currency: "bdt",
+          product_data: { name: `Meal ${item.mealId}` },
+          // you can customize
+          unit_amount: item.price * 100
+        },
+        quantity: item.quantity
+      })),
+      mode: "payment",
+      success_url: `${process.env.PROD_APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
+      cancel_url: `${process.env.PROD_APP_URL}/cancel?paymentId=${payment.id}`,
+      metadata: {
+        paymentId: payment.id,
+        customerId: userId,
+        providerId: payload.providerId,
+        address: payload.address,
+        // 🔥 ADD THIS
+        items: JSON.stringify(payload.items)
+      }
+    });
+    return {
+      type: "ONLINE",
+      paymentId: payment.id,
+      clientSecret: session.payment_intent,
+      checkoutUrl: session.url
+    };
+  }
+  throw new Error("Invalid payment method");
 };
 var getAllOrders = async (user) => {
   const where = {};
@@ -1918,6 +2102,40 @@ var getOrderById = async (id, user) => {
     include: { items: { include: { meal: true } } }
   });
   if (!order) return null;
+  if (user.role === "PROVIDER") {
+    const providerProfile = await prisma.providerProfile.findUnique({
+      where: { userId: user.id }
+    });
+    if (!providerProfile || order.providerId !== providerProfile.id) {
+      throw new Error("Not authorized");
+    }
+  }
+  return order;
+};
+var getOrderByPaymentId = async (paymentId, user) => {
+  const payment = await prisma.payment.findUnique({
+    where: { id: paymentId },
+    include: {
+      order: {
+        include: {
+          items: {
+            include: { meal: true }
+          },
+          provider: true
+        }
+      }
+    }
+  });
+  if (!payment) {
+    throw new Error("Payment not found");
+  }
+  if (!payment.order) {
+    return null;
+  }
+  const order = payment.order;
+  if (user.role === "CUSTOMER" && order.customerId !== user.id) {
+    throw new Error("Not authorized");
+  }
   if (user.role === "PROVIDER") {
     const providerProfile = await prisma.providerProfile.findUnique({
       where: { userId: user.id }
@@ -1975,6 +2193,7 @@ var orderService = {
   createOrder,
   getAllOrders,
   getOrderById,
+  getOrderByPaymentId,
   updateOrderStatus,
   deleteOrder
 };
@@ -2056,6 +2275,52 @@ var getOrderById2 = async (req, res) => {
     });
   }
 };
+var getOrderByPaymentId2 = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+        data: null,
+        error: "User not authenticated"
+      });
+    }
+    const { paymentId } = req.params;
+    if (!paymentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment ID is required",
+        data: null,
+        error: "Missing paymentId"
+      });
+    }
+    const order = await orderService.getOrderByPaymentId(
+      paymentId,
+      req.user
+    );
+    if (!order) {
+      return res.status(200).json({
+        success: true,
+        message: "Order not created yet",
+        data: null,
+        error: null
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Order fetched successfully",
+      data: { order },
+      error: null
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Failed to fetch order",
+      data: null,
+      error: err.message || "Unknown error"
+    });
+  }
+};
 var updateOrderStatus2 = async (req, res) => {
   try {
     if (!req.user)
@@ -2117,6 +2382,7 @@ var orderController = {
   createOrder: createOrder2,
   getAllOrders: getAllOrders2,
   getOrderById: getOrderById2,
+  getOrderByPaymentId: getOrderByPaymentId2,
   updateOrderStatus: updateOrderStatus2,
   deleteOrder: deleteOrder2
 };
@@ -2133,6 +2399,11 @@ router6.get(
   "/:id",
   auth_default("CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */, "ADMIN" /* ADMIN */),
   orderController.getOrderById
+);
+router6.get(
+  "/by-payment/:paymentId",
+  auth_default("CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */, "ADMIN" /* ADMIN */),
+  orderController.getOrderByPaymentId
 );
 router6.patch(
   "/:id",
@@ -2326,8 +2597,161 @@ router7.put("/:id", auth_default("CUSTOMER" /* CUSTOMER */), reviewController.up
 router7.delete("/:id", auth_default("ADMIN" /* ADMIN */), reviewController.deleteReview);
 var reviewRouter = router7;
 
+// src/modules/payment/payment.service.ts
+var handlerStripeWebhookEvent = async (event) => {
+  const existingPayment = await prisma.payment.findFirst({
+    where: {
+      stripeEventId: event.id
+    }
+  });
+  if (existingPayment) {
+    console.log(`Event ${event.id} already processed. Skipping`);
+    return { message: `Event ${event.id} already processed. Skipping` };
+  }
+  switch (event.type) {
+    // ✅ SUCCESS PAYMENT
+    case "checkout.session.completed": {
+      const session = event.data.object;
+      const paymentId = session.metadata?.paymentId;
+      const customerId = session.metadata?.customerId;
+      const providerId = session.metadata?.providerId;
+      const address = session.metadata?.address;
+      const items = JSON.parse(session.metadata?.items || "[]");
+      if (!paymentId || !customerId || !providerId || !address || !items) {
+        console.error("Missing metadata");
+        return { message: "Missing metadata" };
+      }
+      const payment = await prisma.payment.findUnique({
+        where: { id: paymentId }
+      });
+      if (!payment) {
+        console.error(`Payment not found: ${paymentId}`);
+        return { message: `Payment not found` };
+      }
+      if (payment.status === "PAID") {
+        return { message: "Already processed" };
+      }
+      await prisma.$transaction(async (tx) => {
+        const order = await tx.order.create({
+          data: {
+            customerId,
+            providerId,
+            address,
+            totalAmount: payment.amount,
+            paymentMethod: PaymentMethod.ONLINE,
+            paymentStatus: PaymentStatus.PAID,
+            items: {
+              create: items.map((item) => ({
+                quantity: item.quantity,
+                price: item.price,
+                meal: {
+                  connect: { id: item.mealId }
+                }
+              }))
+            }
+          }
+        });
+        await tx.payment.update({
+          where: { id: paymentId },
+          data: {
+            orderId: order.id,
+            status: PaymentStatus.PAID,
+            stripeEventId: event.id,
+            paymentGatewayData: session
+          }
+        });
+      });
+      console.log(`Payment success \u2192 Order created for payment ${paymentId}`);
+      break;
+    }
+    // ❌ EXPIRED SESSION
+    case "checkout.session.expired": {
+      const session = event.data.object;
+      const paymentId = session.metadata?.paymentId;
+      if (paymentId) {
+        await prisma.payment.update({
+          where: { id: paymentId },
+          data: {
+            status: "FAILED",
+            stripeEventId: event.id
+          }
+        });
+      }
+      console.log(`Checkout expired \u2192 Payment failed`);
+      break;
+    }
+    // ❌ PAYMENT FAILED
+    case "payment_intent.payment_failed": {
+      const intent = event.data.object;
+      const payment = await prisma.payment.findFirst({
+        where: {
+          transactionId: intent.id
+        }
+      });
+      if (payment) {
+        await prisma.payment.update({
+          where: { id: payment.id },
+          data: {
+            status: "FAILED",
+            stripeEventId: event.id
+          }
+        });
+      }
+      console.log(`Payment failed \u2192 updated DB`);
+      break;
+    }
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+  return { message: `Webhook Event ${event.id} processed successfully` };
+};
+var PaymentService = {
+  handlerStripeWebhookEvent
+};
+
+// src/modules/payment/payment.controller.ts
+var handleStripeWebhookEvent = async (req, res) => {
+  const signature = req.headers["stripe-signature"];
+  const webhookSecret = envVars.STRIPE.STRIPE_WEBHOOK_SECRET;
+  if (!signature || !webhookSecret) {
+    console.error("Missing Stripe signature or webhook secret");
+    return res.status(400).json({ message: "Missing Stripe signature or webhook secret" });
+  }
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      webhookSecret
+    );
+  } catch (error) {
+    console.error("Stripe signature verification failed:", error.message);
+    return res.status(400).json({
+      message: "Webhook signature verification failed"
+    });
+  }
+  try {
+    const result = await PaymentService.handlerStripeWebhookEvent(event);
+    return res.status(200).json({
+      success: true,
+      message: "Webhook processed",
+      data: result
+    });
+  } catch (error) {
+    console.error("Error handling Stripe webhook:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Webhook handler failed"
+    });
+  }
+};
+var PaymentController = {
+  handleStripeWebhookEvent
+};
+
 // src/app.ts
 var app = express8();
+app.post("/api/stripe/webhook", express8.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent);
 app.use(express8.json());
 var allowedOrigins = [
   process.env.APP_URL || "http://localhost:3000",
