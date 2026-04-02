@@ -20,7 +20,7 @@ This repository contains the backend API for **Food Hub** — a full-stack food 
 - **PostgreSQL** — Relational database  
 - **Prisma ORM** — Database modeling & queries  
 - **Better Auth** — Authentication & session handling 
-- **Google OAuth** — Social login  
+- **Stripe** —  Payment Method  
 - **Vercel** — Backend deployment  
 
 ---
@@ -29,13 +29,12 @@ This repository contains the backend API for **Food Hub** — a full-stack food 
 
 ### 🔐 Authentication
 - User registration with role selection  
-- Login with credentials  
-- Google OAuth login  
+- Login with credentials   
 - Secure session management  
 - Seeded admin account  
 
 ### 📦 Orders
-- Create orders  
+- Create orders With Stripe and COD payment method 
 - View order history  
 - Track order status  
 - Provider-controlled status updates  
@@ -78,6 +77,8 @@ APP_USER=example@gmail.com
 APP_PASS=example_app_password
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+STRIPE_SECRET_KEY=your_stripe_secrect_key
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_serect
 
 
 
