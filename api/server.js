@@ -474,11 +474,12 @@ var mealService = {
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 var auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:5000",
   database: prismaAdapter(prisma, {
     provider: "postgresql"
     // or "mysql", "postgresql", ...etc
   }),
-  trustedOrigins: [process.env.APP_URL],
+  trustedOrigins: [process.env.APP_URL, process.env.PROD_APP_URL].filter(Boolean),
   user: {
     additionalFields: {
       role: {
@@ -2057,6 +2058,8 @@ var createOrder = async (payload, userId) => {
       mode: "payment",
       success_url: `${process.env.PROD_APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
       cancel_url: `${process.env.PROD_APP_URL}/cancel?paymentId=${payment.id}`,
+      // success_url: `${process.env.APP_URL}/dashboard-customer/payment/success?paymentId=${payment.id}`,
+      // cancel_url: `${process.env.APP_URL}/cancel?paymentId=${payment.id}`,
       metadata: {
         paymentId: payment.id,
         customerId: userId,
