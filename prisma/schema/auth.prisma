@@ -68,6 +68,8 @@ enum Role {
   CUSTOMER
   PROVIDER
   ADMIN
+  MANAGER
+  VENDOR
 }
 
 enum UserStatus {
