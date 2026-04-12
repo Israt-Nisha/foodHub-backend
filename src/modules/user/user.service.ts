@@ -89,7 +89,7 @@ const getUserById = async (id: string) => {
   });
 };
 
-const updateUserStatus = async (id: string, data: { status: UserStatus }) => {
+const updateUserStatus = async (id: string, data: { status: UserStatus ; role: UserRole }) => {
 
   await prisma.user.findUniqueOrThrow({ where: { id } });
 
@@ -97,6 +97,8 @@ const updateUserStatus = async (id: string, data: { status: UserStatus }) => {
     where: { id },
     data: {
       status: data.status,
+      role: data.role,
+
     },
   });
 };

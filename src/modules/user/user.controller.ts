@@ -62,11 +62,11 @@ const updateUserStatus = async (
   next: NextFunction,
 ) => {
   try {
-    const { status } = req.body;
+    const { status, role } = req.body;
 
     const { id } = req.params;
 
-    const result = await userService.updateUserStatus(id as string, { status });
+    const result = await userService.updateUserStatus(id as string, { status, role });
 
     res.status(200).json({
       success: true,
